@@ -2,4 +2,4 @@
 #
 # this project is part of the odin project foundations course
 #
-# this project is a brower version of a calculator
+# this project is a simple brower calculator
