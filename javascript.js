@@ -15,6 +15,7 @@ const multiply_btn = document.querySelector("#multiply");
 const divide_btn = document.querySelector("#divide");
 
 const delete_btn = document.querySelector("#delete");
+const clear_btn = document.querySelector("#clear");
 const equal_btn = document.querySelector("#equal");
 
 
@@ -138,6 +139,11 @@ divide_btn.addEventListener("click", () => {
 
 
 delete_btn.addEventListener("click", () => {
+    display_text = display_text.slice(0, display_text.length - 1);
+    update_display(display_text);
+});
+
+clear_btn.addEventListener("click", () => {
     display_text = "";
     update_display(display_text);
 });
