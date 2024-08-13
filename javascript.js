@@ -16,6 +16,7 @@ const multiply_btn = document.querySelector("#multiply");
 const divide_btn = document.querySelector("#divide");
 const power_btn = document.querySelector("#power");
 const exp_btn = document.querySelector("#exp");
+const root_btn = document.querySelector("#root");
 
 const decimal_btn = document.querySelector("#decimal");
 
@@ -48,12 +49,12 @@ function divide(num1, num2) {
 };
 
 function power(num1, num2) {
-    let output = 1;
-    for (j = 1; j <= num2; j++) {
-        output *= num1;
-    }
-    return output;
+    return num1 ** num2;
 };
+
+function root(num1, num2) {
+    return num1 ** (1/num2);
+}
 
 function exponential(num1, num2) {
     let output = num1;
@@ -91,6 +92,8 @@ function operate(operator, num1, num2) {
         output = power(num1, num2);
     } else if (operator == "E") {
         output = exponential(num1, num2);
+    } else if (operator == "√") {
+        output = root(num1, num2);
     };
 
     return output.toString();
@@ -182,6 +185,11 @@ power_btn.addEventListener("click", () => {
     update_display(display_text);
 });
 
+root_btn.addEventListener("click", () => {
+    display_text += "√";
+    update_display(display_text);
+});
+
 decimal_btn.addEventListener("click", () => {
     display_text += ".";
     update_display(display_text);
@@ -218,9 +226,9 @@ equal_btn.addEventListener("click", () => {
     
     //turn display text string into an array seperated into numbers and operators
     for (i = 0; i < display_text.length; i++) {
-        if ("+-*/^E".includes(display_text[i])) {
+        if ("+-*/^E√".includes(display_text[i])) {
             //checks that operators are not next to each other
-            if ("+-*/^E".includes(display_text[i+1])) {
+            if ("+-*/^E√".includes(display_text[i+1])) {
                 invalid = true;
             };
             
@@ -230,7 +238,7 @@ equal_btn.addEventListener("click", () => {
             cur_num = "";
         } else if (display_text[i] == "A") {
             //checks that ans variable is not next to other number
-            if (!((i == 0 || "+-*/^E".includes(display_text[i-1])) && (i == display_text.length-1 || "+-*/^E".includes(display_text[i+1])))) {
+            if (!((i == 0 || "+-*/^E√".includes(display_text[i-1])) && (i == display_text.length-1 || "+-*/^E√".includes(display_text[i+1])))) {
                 invalid = true;
             } else {
                 cur_num += display_text[i];
@@ -244,7 +252,7 @@ equal_btn.addEventListener("click", () => {
     };
 
     //check for invalid equations, operates if valid
-    if ("+-*/^E".includes(equation[equation.length-1]) || invalid == true) {
+    if ("+-*/^E√".includes(equation[equation.length-1]) || invalid == true) {
         display_text = "";
         alert("Invalid Equation!");
     } else {
