@@ -1,3 +1,4 @@
+// HTML Elements
 const one_btn = document.querySelector("#one");
 const two_btn = document.querySelector("#two");
 const three_btn = document.querySelector("#three");
@@ -16,7 +17,13 @@ const divide_btn = document.querySelector("#divide");
 
 const delete_btn = document.querySelector("#delete");
 const clear_btn = document.querySelector("#clear");
+const ans_btn = document.querySelector("#ans");
 const equal_btn = document.querySelector("#equal");
+
+
+
+// Global variables
+let answer = "0";
 
 
 
@@ -37,8 +44,18 @@ function divide(num1, num2) {
 };
 
 function operate(operator, num1, num2) {
-    num1 = +num1;
-    num2 = +num2;
+    //chooses operation to enact given a certain operator parameter
+    if (num1 == "A") {
+        num1 = +answer;
+    } else {
+        num1 = +num1;
+    };
+
+    if (num2 == "A") {
+        num2 = +answer;
+    } else {
+        num2 = +num2;
+    };
     
     let output = 0;
 
@@ -63,6 +80,8 @@ function update_display(text) {
 
 
 let display_text = "";
+
+// These event listeners add the text from the button onto the display text string, then update the display
 
 one_btn.addEventListener("click", () => {
     display_text += "1";
@@ -114,8 +133,6 @@ zero_btn.addEventListener("click", () => {
     update_display(display_text);
 });
 
-
-
 add_btn.addEventListener("click", () => {
     display_text += "+";
     update_display(display_text);
@@ -136,7 +153,14 @@ divide_btn.addEventListener("click", () => {
     update_display(display_text);
 });
 
+ans_btn.addEventListener("click", () => {
+    display_text += "A";
+    update_display(display_text);
+});
 
+
+
+// These event listeners have functionality beyond adding a character to a string
 
 delete_btn.addEventListener("click", () => {
     display_text = display_text.slice(0, display_text.length - 1);
@@ -151,18 +175,27 @@ clear_btn.addEventListener("click", () => {
 equal_btn.addEventListener("click", () => {
     let equation = [];
     let cur_num = "";
-    let double_op = false;
+    let invalid = false;
     
+    //turn display text string into an array seperated into numbers and operators
     for (i = 0; i < display_text.length; i++) {
         if ("+-*/".includes(display_text[i])) {
+            //checks that operators are not next to each other
             if ("+-*/".includes(display_text[i+1])) {
-                double_op = true;
+                invalid = true;
             };
             
             let num = cur_num;
             equation.push(num);
             equation.push(display_text[i]);
             cur_num = "";
+        } else if (display_text[i] == "A") {
+            //checks that ans variable is not next to other number
+            if (!((i == 0 || "+-*/".includes(display_text[i-1])) && (i == display_text.length-1 || "+-*/".includes(display_text[i+1])))) {
+                invalid = true;
+            } else {
+                cur_num += display_text[i];
+            };
         } else {
             cur_num += display_text[i];
         };
@@ -171,28 +204,36 @@ equal_btn.addEventListener("click", () => {
         };
     };
 
-
-
-    if ("+-*/".includes(equation[equation.length-1]) || double_op == true) {
+    //check for invalid equations, operates if valid
+    if ("+-*/".includes(equation[equation.length-1]) || invalid == true) {
         display_text = "";
         alert("Invalid Equation!");
     } else {
+        //does an operation when operator is found in equation array, then alters equation array with new value
         let new_num;
-
+        
+        console.log(equation);
+        //conducts multiplication and division first
         for (i = 0; i < equation.length; i++) {
+            console.log(equation);
             if (equation[i] == "*" || equation[i] == "/") {
                 new_num = operate(equation[i], equation[i-1], equation[i+1]);
                 equation.splice(i-1, 3, new_num);
+                i -= 1;
             };
         };
 
+        //conducts addition and subtraction second
         for (i = 0; i < equation.length; i++) {
+            console.log(equation);
             if (equation[i] == "+" || equation[i] == "-") {
                 new_num = operate(equation[i], equation[i-1], equation[i+1]);
                 equation.splice(i-1, 3, new_num);
+                i -= 1;
             };
         };
 
+        answer = equation[0];
         display_text = equation[0];
     };
     
