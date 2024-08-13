@@ -192,6 +192,11 @@ ans_btn.addEventListener("click", () => {
     update_display(display_text);
 });
 
+exp_btn.addEventListener("click", () => {
+    display_text += "E";
+    update_display(display_text);
+});
+
 
 
 // These event listeners have functionality beyond adding a character to a string
@@ -213,9 +218,9 @@ equal_btn.addEventListener("click", () => {
     
     //turn display text string into an array seperated into numbers and operators
     for (i = 0; i < display_text.length; i++) {
-        if ("+-*/^".includes(display_text[i])) {
+        if ("+-*/^E".includes(display_text[i])) {
             //checks that operators are not next to each other
-            if ("+-*/^".includes(display_text[i+1])) {
+            if ("+-*/^E".includes(display_text[i+1])) {
                 invalid = true;
             };
             
@@ -225,7 +230,7 @@ equal_btn.addEventListener("click", () => {
             cur_num = "";
         } else if (display_text[i] == "A") {
             //checks that ans variable is not next to other number
-            if (!((i == 0 || "+-*/^".includes(display_text[i-1])) && (i == display_text.length-1 || "+-*/^".includes(display_text[i+1])))) {
+            if (!((i == 0 || "+-*/^E".includes(display_text[i-1])) && (i == display_text.length-1 || "+-*/^E".includes(display_text[i+1])))) {
                 invalid = true;
             } else {
                 cur_num += display_text[i];
@@ -239,7 +244,7 @@ equal_btn.addEventListener("click", () => {
     };
 
     //check for invalid equations, operates if valid
-    if ("+-*/^".includes(equation[equation.length-1]) || invalid == true) {
+    if ("+-*/^E".includes(equation[equation.length-1]) || invalid == true) {
         display_text = "";
         alert("Invalid Equation!");
     } else {
