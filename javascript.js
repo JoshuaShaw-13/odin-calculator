@@ -14,6 +14,10 @@ const add_btn = document.querySelector("#add");
 const subtract_btn = document.querySelector("#subtract");
 const multiply_btn = document.querySelector("#multiply");
 const divide_btn = document.querySelector("#divide");
+const power_btn = document.querySelector("#power");
+const exp_btn = document.querySelector("#exp");
+
+const decimal_btn = document.querySelector("#decimal");
 
 const delete_btn = document.querySelector("#delete");
 const clear_btn = document.querySelector("#clear");
@@ -43,6 +47,22 @@ function divide(num1, num2) {
     return num1 / num2;
 };
 
+function power(num1, num2) {
+    let output = 1;
+    for (j = 1; j <= num2; j++) {
+        output *= num1;
+    }
+    return output;
+};
+
+function exponential(num1, num2) {
+    let output = num1;
+    for (k = 1; k <= num2; k++) {
+        output *= 10;
+    }
+    return output;
+}
+
 function operate(operator, num1, num2) {
     //chooses operation to enact given a certain operator parameter
     if (num1 == "A") {
@@ -67,6 +87,10 @@ function operate(operator, num1, num2) {
         output = multiply(num1, num2);
     } else if (operator == "/") {
         output = divide(num1, num2);
+    } else if (operator == "^") {
+        output = power(num1, num2);
+    } else if (operator == "E") {
+        output = exponential(num1, num2);
     };
 
     return output.toString();
@@ -153,6 +177,16 @@ divide_btn.addEventListener("click", () => {
     update_display(display_text);
 });
 
+power_btn.addEventListener("click", () => {
+    display_text += "^";
+    update_display(display_text);
+});
+
+decimal_btn.addEventListener("click", () => {
+    display_text += ".";
+    update_display(display_text);
+});
+
 ans_btn.addEventListener("click", () => {
     display_text += "A";
     update_display(display_text);
@@ -179,9 +213,9 @@ equal_btn.addEventListener("click", () => {
     
     //turn display text string into an array seperated into numbers and operators
     for (i = 0; i < display_text.length; i++) {
-        if ("+-*/".includes(display_text[i])) {
+        if ("+-*/^".includes(display_text[i])) {
             //checks that operators are not next to each other
-            if ("+-*/".includes(display_text[i+1])) {
+            if ("+-*/^".includes(display_text[i+1])) {
                 invalid = true;
             };
             
@@ -191,7 +225,7 @@ equal_btn.addEventListener("click", () => {
             cur_num = "";
         } else if (display_text[i] == "A") {
             //checks that ans variable is not next to other number
-            if (!((i == 0 || "+-*/".includes(display_text[i-1])) && (i == display_text.length-1 || "+-*/".includes(display_text[i+1])))) {
+            if (!((i == 0 || "+-*/^".includes(display_text[i-1])) && (i == display_text.length-1 || "+-*/^".includes(display_text[i+1])))) {
                 invalid = true;
             } else {
                 cur_num += display_text[i];
@@ -205,17 +239,26 @@ equal_btn.addEventListener("click", () => {
     };
 
     //check for invalid equations, operates if valid
-    if ("+-*/".includes(equation[equation.length-1]) || invalid == true) {
+    if ("+-*/^".includes(equation[equation.length-1]) || invalid == true) {
         display_text = "";
         alert("Invalid Equation!");
     } else {
         //does an operation when operator is found in equation array, then alters equation array with new value
         let new_num;
-        
         console.log(equation);
-        //conducts multiplication and division first
+        //conducts power and exponent calculations first
         for (i = 0; i < equation.length; i++) {
-            console.log(equation);
+            if (equation[i] == "^" || equation[i] == "E") {
+                console.log(equation);
+                new_num = operate(equation[i], equation[i-1], equation[i+1]);
+                equation.splice(i-1, 3, new_num);
+                i -= 1;
+                console.log(equation);
+            };
+        };
+
+        //conducts multiplication and division second
+        for (i = 0; i < equation.length; i++) {
             if (equation[i] == "*" || equation[i] == "/") {
                 new_num = operate(equation[i], equation[i-1], equation[i+1]);
                 equation.splice(i-1, 3, new_num);
@@ -223,9 +266,8 @@ equal_btn.addEventListener("click", () => {
             };
         };
 
-        //conducts addition and subtraction second
+        //conducts addition and subtraction third
         for (i = 0; i < equation.length; i++) {
-            console.log(equation);
             if (equation[i] == "+" || equation[i] == "-") {
                 new_num = operate(equation[i], equation[i-1], equation[i+1]);
                 equation.splice(i-1, 3, new_num);
